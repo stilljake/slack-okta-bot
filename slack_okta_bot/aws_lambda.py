@@ -7,10 +7,9 @@ from logging import getLogger
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
 from slack_bolt import App
 
+from .config import LOGGER
 from .slack import slack_app
 
-
-getLogger().setLevel(environ.get("LOG_LEVEL", "INFO"))
 
 IS_LAMBDA = bool(environ.get("AWS_LAMBDA_FUNCTION_VERSION"))
 
@@ -21,18 +20,18 @@ class LambdaHandler:
         self.handler = SlackRequestHandler(app=app)
 
     def handle(self, event, context):
-        if event.get["requestContext"].get("elb"):
+        if event["requestContext"].get("elb"):
             try:
                 event = parse_from_alb(event)
             except Exception as e:
-                getLogger().error(f"Could not parse event from ELB: {e}")
+                LOGGER.exception(f"Could not parse event from ELB: {e}")
 
         try:
             res = self.handler.handle(event, context)
-            getLogger().info(res)
+            LOGGER.info(res)
             return res
         except Exception as e:
-            getLogger().info(e)
+            LOGGER.exception(e)
 
 
 def parse_from_alb(event: dict) -> dict:
@@ -68,11 +67,11 @@ def parse_from_alb(event: dict) -> dict:
 
 
 def lambda_handler(event, context):
-    getLogger().info(dumps(event, indent=2))
+    LOGGER.info(dumps(event, indent=2))
     handler = LambdaHandler(slack_app)
     try:
         res = handler.handle(event, context)
-        getLogger().info(res)
+        LOGGER.info(res)
         return res
     except Exception as e:
-        getLogger().info(e)
+        LOGGER.exception(e)

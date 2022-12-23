@@ -13,7 +13,7 @@ try:
     OKTA_TOKEN = environ["OKTA_TOKEN"]
     OKTA_URL = environ["OKTA_API_URL"]  # "https://okta.mcng.io/api/v1"
 except KeyError as e:
-    LOGGER(f"Missing env var: {e}")
+    LOGGER.error(f"Missing env var: {e}")
 
 OKTA_HEADERS = {
     "Accept": "application/json",
@@ -28,6 +28,8 @@ def get_mfa_for_user(email: str) -> List[Dict[str, str]]:
     res = OKTA_SESSION.get(f"{OKTA_URL}/users/{uid}/factors").json()
     factors = []
     for factor in res:
+        if factor["factorType"] == "token:software:totp":
+            continue
         info = {
             "id": factor["id"],
             "type": factor["factorType"],
@@ -43,22 +45,29 @@ def get_mfa_for_user(email: str) -> List[Dict[str, str]]:
 
 def get_uid_by_email(email: str) -> str:
     email = email.replace("@", "%40")
-    uid = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}").json()["id"]
+    res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
+    res.raise_for_status()
+    uid = res.json()["id"]
     return uid
 
 
 def reset_factor(uid: str, factor_id: str) -> int:
     url = f"{OKTA_URL}/users/{uid}/factors/{factor_id}"
     res = OKTA_SESSION.delete(url)
-    res.raise_for_status()
+    try:
+        res.raise_for_status()
+    except Exception as e:
+        if res.status_code not in (404, 400):
+            raise e from e
     return res.status_code
 
 
 def send_password_email(email: str):
     # Get Okta user id from Slack email address
-    okta_user = get_uid_by_email(email)
-    link = okta_user["_links"]["resetPassword"]["href"]
-
+    res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
+    res.raise_for_status()
+    link = res.json()["_links"]["resetPassword"]["href"]
+    
     # Send a password reset email
     res = OKTA_SESSION.post(f"{link}?sendEmail=true")
     res.raise_for_status()

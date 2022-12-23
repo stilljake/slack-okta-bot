@@ -45,11 +45,15 @@ def handle_message(_, __) -> None:
 
 
 @slack_app.command(RESET_PASSWORD_COMMAND)
-def reset_password_prompt(ack) -> None:
+def reset_password_prompt(ack, body) -> None:
     """
     Ack and send the form for resetting password
     """
-    ack(blocks=get_reset_password_form())
+    user = body["user_id"]
+    email = TEST_USER or slack_app.client.users_info(
+        user=user)["user"]["profile"]["email"]
+
+    ack(blocks=get_reset_password_form(email))
 
 
 @slack_app.action("confirm_password_reset")
@@ -94,7 +98,7 @@ def reset_mfa_prompt(ack, body) -> None:
         )
         return
 
-    blocks = get_reset_mfa_form(factors)
+    blocks = get_reset_mfa_form(email, factors)
 
     ack(blocks=blocks)
 

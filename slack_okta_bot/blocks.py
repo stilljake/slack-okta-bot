@@ -8,13 +8,13 @@ from .config import (
 )
 
 
-def get_reset_password_form() -> List[Dict]:
+def get_reset_password_form(email) -> List[Dict]:
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": ":gear: *Confirm that you want to reset your password. Okta will send you a password reset email.*",
+                "text": f":gear: *Confirm that you want to reset password for {email}. Okta will send you a password reset email.*",
             },
         },
         {"type": "divider"},
@@ -30,8 +30,15 @@ def get_reset_password_form() -> List[Dict]:
     ]
 
 
-def get_reset_mfa_form(factors: List[Dict[str, str]]) -> List[Dict[str, str]]:
+def get_reset_mfa_form(email: str, factors: List[Dict[str, str]]) -> List[Dict[str, str]]:
     return [
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f":gear: *Reset MFA Devices for {email}* :gear:",
+            }
+        },
         {
             "type": "section",
             "text": {
