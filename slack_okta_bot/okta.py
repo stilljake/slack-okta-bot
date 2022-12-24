@@ -11,7 +11,7 @@ from .config import LOGGER
 OKTA_SESSION = Session()
 try:
     OKTA_TOKEN = environ["OKTA_TOKEN"]
-    OKTA_URL = environ["OKTA_API_URL"]  # "https://okta.mcng.io/api/v1"
+    OKTA_URL = environ["OKTA_API_URL"]
 except KeyError as e:
     LOGGER.error(f"Missing env var: {e}")
 
