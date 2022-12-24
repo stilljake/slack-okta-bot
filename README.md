@@ -30,9 +30,15 @@ The following env vars are used for configuration
 
 ## Usage
 
-### With AWS Lambda:
+### With AWS Lambda: The easy way
+For convenience, if you don't need any additional logic in your handler, you can just
+build your package using `build_lambda.sh` (Described below) and set your Lambda's handler to `slack_okta_bot.aws_lambda.lambda_handler`.
 
+
+
+### AWS Lambda: Manual way
 ```python
+from json import dumps
 from logging import getLogger
 
 from slack_okta_bot.slack import slack_app
@@ -54,10 +60,6 @@ def handler(event, context):
 ```
 
 In your Lambda config You would set your lambda handler to `module.handler` where `module` is the name of your Lambda package module
-
-For convenience, if you don't need any additional logic in your handler, you can just set your Lambda's handler to `slack_okta_bot.aws_lambda.lambda_handler`
-
-In your Lambda config You would set your lambda handler to `module.lambda_handler` where `module` is the name of your Lambda package module
 
 
 ## Building a basic Lambda package
