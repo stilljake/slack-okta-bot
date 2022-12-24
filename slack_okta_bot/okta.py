@@ -62,7 +62,7 @@ def reset_factor(uid: str, factor_id: str) -> int:
     return res.status_code
 
 
-def send_password_email(email: str):
+def send_password_email(email: str) -> int:
     # Get Okta user id from Slack email address
     res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
     res.raise_for_status()
