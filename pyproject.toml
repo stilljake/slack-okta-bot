@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "slack-okta-bot"
-version = "0.0.1"
+version = "0.0.2"
 description = "Provides quick access to Okta user management from Slack"
 authors = ["Mathew Moon <me@mathewmoon.net>"]
 packages = [
@@ -8,7 +8,7 @@ packages = [
 ]
 homepage = "https://github.com/mathewmoon/slack-okta-bot"
 documentation = "https://github.com/mathewmoon/slack-okta-bot"
-
+readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.28.1"

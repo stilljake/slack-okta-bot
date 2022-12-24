@@ -67,13 +67,21 @@ def reset_password(ack, body, respond) -> None:
 
     try:
         send_password_email(email)
-        respond(
-            f":email: Password email has been sent to {email}. Check your email and follow the link."
-        )
+        respond(blocks=[{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f":email: Password email has been sent to {email}. Check your email and follow the link."
+            }
+        }])
     except Exception:
-        respond(
-            f":exclamation: Could not reset password for {email}. Reach out in {HELP_CHANNEL} for further help."
-        )
+        respond(blocks=[{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f":exclamation: Could not reset password for {email}. Reach out in {HELP_CHANNEL} for further help."
+            }
+        }])
 
 
 @slack_app.command(RESET_MFA_COMMAND)
@@ -87,15 +95,23 @@ def reset_mfa_prompt(ack, body) -> None:
     try:
         factors = get_mfa_for_user(email)
     except Exception:
-        ack(
-            f"Could not find MFA devices for {email}. Reach out in {HELP_CHANNEL} for help."
-        )
+        ack(blocks=[{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f"Could not find MFA devices for {email}. Reach out in {HELP_CHANNEL} for help."
+            }
+        }])
         return
 
     if not factors:
-        ack(
-            f":exclamation: It lools like you have no registered factors. Try logging in and if you are not prompted to configure MFA contact us at {HELP_CHANNEL}"
-        )
+        ack(blocks=[{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": f":exclamation: It lools like you have no registered factors. Try logging in and if you are not prompted to configure MFA contact us at {HELP_CHANNEL}"
+            }
+        }])
         return
 
     blocks = get_reset_mfa_form(email, factors)
