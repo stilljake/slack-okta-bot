@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from json import dumps
 from os import environ
 from typing import Dict, List
 
@@ -25,20 +26,19 @@ OKTA_SESSION.headers = OKTA_HEADERS
 
 def get_mfa_for_user(email: str) -> List[Dict[str, str]]:
     uid = get_uid_by_email(email)
-    res = OKTA_SESSION.get(f"{OKTA_URL}/users/{uid}/factors").json()
-    factors = []
+    res = OKTA_SESSION.get(
+        f"{OKTA_URL}/users/{uid}/authenticatorEnrollments").json()
+    LOGGER.info(dumps(res, indent=2))
+
+    factors = {}
     for factor in res:
-        if factor["factorType"] == "token:software:totp":
+        if factor["type"] in ("password", "email"):
             continue
-        info = {
-            "id": factor["id"],
-            "type": factor["factorType"],
-        }
-        info["name"] = factor["profile"].get(
-            "name",
-            f"{factor['vendorName']}:{factor['factorType']} - {factor['provider']}",
-        )
-        factors.append(info)
+        name = factor["name"]
+        if device := factor.get("profile", {}).get("deviceName"):
+            name += f" ({device})"
+
+        factors[factor["id"]] = name
 
     return factors
 
@@ -72,3 +72,4 @@ def send_password_email(email: str) -> int:
     res = OKTA_SESSION.post(f"{link}?sendEmail=true")
     res.raise_for_status()
     return res.status_code
+

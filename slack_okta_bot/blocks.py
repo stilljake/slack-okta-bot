@@ -62,10 +62,10 @@ def get_reset_mfa_form(email: str, factors: List[Dict[str, str]]) -> List[Dict[s
                 },
                 "options": [
                     {
-                        "text": {"type": "plain_text", "text": factor["name"]},
-                        "value": factor["id"],
+                        "text": {"type": "plain_text", "text": name},
+                        "value": id,
                     }
-                    for factor in factors
+                    for id, name in factors.items()
                 ],
             },
         },
@@ -95,7 +95,7 @@ def get_home_view() -> Dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"\n\n:slack: For additional help reach out in {HELP_CHANNEL} :slack:",
+                    "text": f"\n\nWhen resetting MFA you won't be prompted on login to re-renroll if you have any other methods still enrolled. If you have at least one working MFA you can add or remove authenticators under your personal settings in Okta. Resetting all MFA devices will cause Okta to prompt you to enroll a device after a successful password login.\n\n:slack: For additional help reach out in {HELP_CHANNEL} :slack:",
                 },
             },
         ],
