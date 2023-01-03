@@ -2,6 +2,7 @@
 from json import dumps
 from os import environ
 from typing import Dict, List
+from urllib.parse import quote
 
 from requests import Session
 
@@ -26,8 +27,8 @@ OKTA_SESSION.headers = OKTA_HEADERS
 
 def get_mfa_for_user(email: str) -> List[Dict[str, str]]:
     uid = get_uid_by_email(email)
-    res = OKTA_SESSION.get(
-        f"{OKTA_URL}/users/{uid}/authenticatorEnrollments").json()
+
+    res = OKTA_SESSION.get(f"{OKTA_URL}/users/{uid}/authenticatorEnrollments").json()
     LOGGER.info(dumps(res, indent=2))
 
     factors = {}
@@ -44,7 +45,7 @@ def get_mfa_for_user(email: str) -> List[Dict[str, str]]:
 
 
 def get_uid_by_email(email: str) -> str:
-    email = email.replace("@", "%40")
+    email = quote(email)
     res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
     res.raise_for_status()
     uid = res.json()["id"]
@@ -52,12 +53,13 @@ def get_uid_by_email(email: str) -> str:
 
 
 def reset_factor(uid: str, factor_id: str) -> int:
-    url = f"{OKTA_URL}/users/{uid}/factors/{factor_id}"
+    url = f"{OKTA_URL}/users/{uid}/authenticatorEnrollments/{factor_id}"
     res = OKTA_SESSION.delete(url)
     try:
         res.raise_for_status()
     except Exception as e:
         if res.status_code not in (404, 400):
+            LOGGER.exception(e)
             raise e from e
     return res.status_code
 
@@ -67,9 +69,8 @@ def send_password_email(email: str) -> int:
     res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
     res.raise_for_status()
     link = res.json()["_links"]["resetPassword"]["href"]
-    
+
     # Send a password reset email
     res = OKTA_SESSION.post(f"{link}?sendEmail=true")
     res.raise_for_status()
     return res.status_code
-

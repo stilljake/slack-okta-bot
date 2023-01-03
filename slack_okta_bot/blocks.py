@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
 from typing import Dict, List
-from .config import (
-  HELP_CHANNEL,
-  HOME_HEADER,
-  RESET_MFA_COMMAND,
-  RESET_PASSWORD_COMMAND
-)
+from .config import HELP_CHANNEL, HOME_HEADER, RESET_MFA_COMMAND, RESET_PASSWORD_COMMAND
 
 
 def get_reset_password_form(email) -> List[Dict]:
@@ -30,14 +25,16 @@ def get_reset_password_form(email) -> List[Dict]:
     ]
 
 
-def get_reset_mfa_form(email: str, factors: List[Dict[str, str]]) -> List[Dict[str, str]]:
+def get_reset_mfa_form(
+    email: str, factors: List[Dict[str, str]]
+) -> List[Dict[str, str]]:
     return [
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
                 "text": f":gear: *Reset MFA Devices for {email}* :gear:",
-            }
+            },
         },
         {
             "type": "section",
