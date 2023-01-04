@@ -63,8 +63,18 @@ In your Lambda config You would set your lambda handler to `module.handler` wher
 
 
 ## Building a basic Lambda package
+
+From source:
 * Run `build_lambda.sh`. It requires that `poetry` be installed and will install it if missing.
 * Upload the created zip file to S3 and configure your Lambda to pull from S3
+* Optionally upload the package manually in the AWS Lambda console
+* Set your Lambda's handler to `slack_okta_bot.aws_lambda.lambda_handler`
+
+Using PIP
+* Run `pip install slack-okta-bot -t packages`
+* `cd` into ./packages directory
+* Run `zip -r ../lambda.zip . -x '*.pyc'`
+* Upload ../lambda.zip to S3 and configure your Lambda to pull from S3
 * Optionally upload the package manually in the AWS Lambda console
 * Set your Lambda's handler to `slack_okta_bot.aws_lambda.lambda_handler`
 
