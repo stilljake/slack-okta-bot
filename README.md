@@ -116,4 +116,4 @@ To install in Slack:
 * In the Slack app configuration page go to "Event Subscriptions"
 * If the Request URL is not marked as "Verified" click the verify button/link
 
-Your app's homepage should now show and commands will become active. Test by entering a slash command in any channel in slack. Your interaction with the bot will be private and won't be displayed to other users in the chat.
+Your app's homepage should now show and commands will become active. Test by entering a slash command in any channel in slack. Your interaction with the bot will be private and won't be displayed to other users in the chat. If the application is installed into the Apps side pane in Slack then you can also access the app's home page to see the description and available commands.
