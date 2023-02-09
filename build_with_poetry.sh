@@ -16,6 +16,7 @@ if ! which poetry; then
 fi
 
 ZIP_FILE="slack-okta-bot-${VERSION}.zip"
-pip install  slack-okta-bot -t package
-cd package
-zip -r ../${ZIP_FILE} . -x '*.pyc'
+poetry export -f requirements.txt --without-hashes -o requirements.txt # Until Poetry releases 1.2 with plugins
+sed -i '1d' requirements.txt
+poetry run pip install . -r requirements.txt -t package
+(cd package && zip -r ../${ZIP_FILE} . -x '*.pyc')

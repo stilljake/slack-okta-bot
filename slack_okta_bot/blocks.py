@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from typing import Dict, List
-from .config import HELP_CHANNEL, HOME_HEADER, RESET_MFA_COMMAND, RESET_PASSWORD_COMMAND
+from .config import HELP_CHANNEL, HOME_HEADER, RESET_MFA_COMMAND, RESET_PASSWORD_COMMAND, HOME_VIEW
 
 
 def get_reset_password_form(email) -> List[Dict]:
@@ -48,14 +48,14 @@ def get_reset_mfa_form(
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": ":gear: *Select an MFA device to reset*",
+                "text": ":gear: *Select MFA devices to reset*",
             },
             "accessory": {
                 "action_id": "reset_selected_mfa",
                 "type": "multi_static_select",
                 "placeholder": {
                     "type": "plain_text",
-                    "text": "Select MFA Devices to Reset",
+                    "text": "Click to select MFA Devices",
                 },
                 "options": [
                     {
@@ -92,10 +92,23 @@ def get_home_view() -> Dict:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"\n\nWhen resetting MFA you won't be prompted on login to re-renroll if you have any other methods still enrolled. If you have at least one working MFA you can add or remove authenticators under your personal settings in Okta. Resetting all MFA devices will cause Okta to prompt you to enroll a device after a successful password login.\n\n:slack: For additional help reach out in {HELP_CHANNEL} :slack:",
+                    "text": f"\n\nWhen resetting MFA you won't be prompted on login to re-enroll if you have any other methods still enrolled. If you have at least one working MFA you can add or remove authenticators under your personal settings in Okta. Resetting all MFA devices will cause Okta to prompt you to enroll a device after a successful password login.\n\n:slack: For additional help reach out in {HELP_CHANNEL} :slack:",
                 },
             },
         ],
     }
+
+    if HOME_VIEW:
+        homeview = [
+            {"type": "divider"},
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": HOME_VIEW
+                }
+            }
+        ]
+        form["blocks"] += homeview
 
     return form

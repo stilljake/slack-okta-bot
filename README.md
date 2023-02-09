@@ -17,6 +17,7 @@ The following env vars are used for configuration
 |------------------------|---------------------------------------------------------------------------|----------|------------------------------------------------------|---|
 | HELP_CHANNEL           | Help channel displayed in responses to user                               | no       | #devops-help                                         |   |
 | HOME_HEADER            | Header displayed in app home page                                         | no       | :gear: Get help with common DevOps Okta tasks :gear: |   |
+| HOME_VIEW              | Additional info to show in app home page                                  | no       |                                                      |   |
 | RESET_MFA_COMMAND      | Command the user sends to reset MFA                                       | no       | /reset-mfa                                           |   |
 | RESET_PASSWORD_COMMAND | Command the user sends to reset password                                  | no       | /reset-password                                      |   |
 | TEST_USER              | An email address that, if set, be used instead of the user's slack email. | no       |                                                      |   |
@@ -65,7 +66,7 @@ In your Lambda config You would set your lambda handler to `module.handler` wher
 ## Building a basic Lambda package
 
 From source:
-* Run `build_lambda.sh`. It requires that `poetry` be installed and will install it if missing.
+* Run `build_with_poetry.sh`. It requires that `poetry` be installed and will install it if missing.
 * Upload the created zip file to S3 and configure your Lambda to pull from S3
 * Optionally upload the package manually in the AWS Lambda console
 * Set your Lambda's handler to `slack_okta_bot.aws_lambda.lambda_handler`
