@@ -24,7 +24,7 @@ The following env vars are used for configuration
 | PORT                   | Port to run the local server on                                           | no       | 3000                                                 |   |
 | SLACK_BOT_TOKEN        | Slack Bot User Oauth Token                                                | yes      |                                                      |   |
 | SLACK_SIGNING_SECRET   | Slack Signing Secret                                                      | yes      |                                                      |   |
-| OKTA_URL               | Okta api endpoint <yourdomain.okta.com/api/v1>                            | yes      |                                                      |   |
+| OKTA_API_URL           | Okta api endpoint <yourdomain.okta.com/api/v1>                            | yes      |                                                      |   |
 | OKTA_TOKEN             | Okta API token                                                            | yes      |                                                      |   |
 
 
