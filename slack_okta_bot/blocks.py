@@ -9,17 +9,34 @@ def get_reset_password_form(email) -> List[Dict]:
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f":gear: *Confirm that you want to reset password for {email}. Okta will send you a password reset email.*",
+                "text": f":gear: *Confirm that you want to reset password for {email}. You can choose to recieve a password reset email or a reset link as a slack message.*",
             },
         },
         {"type": "divider"},
         {
             "type": "section",
-            "text": {"type": "mrkdwn", "text": "*Are you sure?*"},
+            "text": {
+                "type": "mrkdwn",
+                "text": ":gear: *Select reset method*",
+            },
             "accessory": {
                 "action_id": "confirm_password_reset",
-                "type": "button",
-                "text": {"type": "plain_text", "text": "Reset My Password"},
+                "type": "multi_static_select",
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Click to select Email or Slack",
+                },
+                "options": [
+                    {
+                        "text": {"type": "plain_text", "text": "Send password reset email"},
+                        "value": "send_email",
+                    },
+                    {
+                        "text": {"type": "plain_text", "text": "Send password reset link as slack message"},
+                        "value": "send_reset_link",
+                    }
+
+                ],
             },
         },
     ]

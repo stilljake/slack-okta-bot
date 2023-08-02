@@ -11,8 +11,7 @@ from .config import (
     RESET_MFA_COMMAND,
     RESET_PASSWORD_COMMAND,
 )
-from .okta import get_mfa_for_user, get_uid_by_email, reset_factor, send_password_email
-
+from .okta import get_mfa_for_user, get_uid_by_email, reset_factor, send_password_email, send_reset_link
 
 try:
     SLACK_BOT_TOKEN = environ["SLACK_BOT_TOKEN"]
@@ -42,7 +41,7 @@ def reset_password_prompt(ack, body) -> None:
     """
     user = body["user_id"]
     email = (
-        TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
+            TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
     )
 
     ack(blocks=get_reset_password_form(email))
@@ -54,36 +53,65 @@ def reset_password(ack, body, respond) -> None:
     Look up the user's Okta ID and send a password reset email
     """
     ack()
+    print(body)
     user = body["user"]["id"]
     email = (
-        TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
+            TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
     )
+    selected = body["actions"][0]["selected_options"][0]["value"]
 
-    try:
-        send_password_email(email)
-        respond(
-            blocks=[
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f":email: Password email has been sent to {email}. Check your email and follow the link.",
-                    },
-                }
-            ]
-        )
-    except Exception:
-        respond(
-            blocks=[
-                {
-                    "type": "section",
-                    "text": {
-                        "type": "mrkdwn",
-                        "text": f":exclamation: Could not reset password for {email}. Reach out in {HELP_CHANNEL} for further help.",
-                    },
-                }
-            ]
-        )
+    if selected == "send_email":
+        try:
+            send_password_email(email)
+            respond(
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f":email: Password email has been sent to {email}. Check your email and follow the link.",
+                        },
+                    }
+                ]
+            )
+        except Exception:
+            respond(
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f":exclamation: Could not reset password for {email}. Reach out in {HELP_CHANNEL} for further help.",
+                        },
+                    }
+                ]
+            )
+    elif selected == "send_reset_link":
+        try:
+            reset_link = send_reset_link(email)
+            respond(
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f":email: {reset_link}",
+                        },
+                    }
+                ]
+            )
+        except Exception:
+            respond(
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": f":exclamation: Could not reset password",
+                        },
+                    }
+                ]
+            )
 
 
 @slack_app.command(RESET_MFA_COMMAND)
@@ -93,7 +121,7 @@ def reset_mfa_prompt(ack, body) -> None:
     """
     user = body["user_id"]
     email = (
-        TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
+            TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
     )
 
     try:
@@ -136,7 +164,7 @@ def exec_reset_mfa(ack, body, respond):
     ack()
     user = body["user"]["id"]
     email = (
-        TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
+            TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
     )
     okta_user = get_uid_by_email(email)
     selected = [opt["value"] for opt in body["actions"][0]["selected_options"]]
