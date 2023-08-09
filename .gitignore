@@ -151,3 +151,4 @@ venv.bak/
 .mypy_cache/
 
 .vscode
+run.py

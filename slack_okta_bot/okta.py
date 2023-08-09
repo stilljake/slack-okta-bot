@@ -8,7 +8,6 @@ from requests import Session
 
 from .config import LOGGER
 
-
 # Okta auth config
 OKTA_SESSION = Session()
 try:
@@ -74,3 +73,16 @@ def send_password_email(email: str) -> int:
     res = OKTA_SESSION.post(f"{link}?sendEmail=true")
     res.raise_for_status()
     return res.status_code
+
+
+def send_reset_link(email: str) -> int:
+    # Get Okta user id from Slack email address
+    res = OKTA_SESSION.get(f"{OKTA_URL}/users/{email}")
+    res.raise_for_status()
+    link = res.json()["_links"]["resetPassword"]["href"]
+
+    # Send a password reset email
+    res = OKTA_SESSION.post(f"{link}?sendEmail=false")
+    res.raise_for_status()
+    reset_link = res.json().get("resetPasswordUrl")
+    return reset_link
