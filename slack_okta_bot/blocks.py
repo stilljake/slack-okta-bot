@@ -21,7 +21,7 @@ def get_reset_password_form(email) -> List[Dict]:
             },
             "accessory": {
                 "action_id": "confirm_password_reset",
-                "type": "multi_static_select",
+                "type": "static_select",
                 "placeholder": {
                     "type": "plain_text",
                     "text": "Click to select Email or Slack",

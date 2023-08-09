@@ -58,7 +58,7 @@ def reset_password(ack, body, respond) -> None:
     email = (
             TEST_USER or slack_app.client.users_info(user=user)["user"]["profile"]["email"]
     )
-    selected = body["actions"][0]["selected_options"][0]["value"]
+    selected = body["actions"][0]["selected_option"]["value"]
 
     if selected == "send_email":
         try:
