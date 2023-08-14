@@ -69,7 +69,7 @@ def reset_password(ack, body, respond) -> None:
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f":email: Password email has been sent to {email}. Check your email and follow the link.",
+                            "text": f":email: Password reset email has been sent to {email}. Check your email and follow the link.",
                         },
                     }
                 ]
@@ -81,7 +81,7 @@ def reset_password(ack, body, respond) -> None:
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": f":exclamation: Could not reset password for {email}. Reach out in {HELP_CHANNEL} for further help.",
+                            "text": f":exclamation: Could not reset password for {email}. Submit a ticket here {HELP_CHANNEL} for further help.",
                         },
                     }
                 ]
@@ -133,7 +133,7 @@ def reset_mfa_prompt(ack, body) -> None:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f"Could not find MFA devices for {email}. Reach out in {HELP_CHANNEL} for help.",
+                        "text": f"Could not find MFA devices for {email}. Submit a ticket here {HELP_CHANNEL} for further help.",
                     },
                 }
             ]
@@ -147,7 +147,7 @@ def reset_mfa_prompt(ack, body) -> None:
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": f":exclamation: It lools like you have no registered factors. Try logging in and if you are not prompted to configure MFA contact us at {HELP_CHANNEL}",
+                        "text": f":exclamation: It lools like you have no registered factors. Try logging in and if you are not prompted to configure MFA, submit a ticket here {HELP_CHANNEL} for further help.",
                     },
                 }
             ]
